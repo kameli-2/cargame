@@ -9,17 +9,52 @@
 				position: absolute;
 				top: 0;
 				left: 0;
-				width: 99%;
+				width: 80%;
 				height: 98vh;
-				overflow: hidden;
 				background-image: url("asfaltti.jpg");
 				background-size: 300px;
+			}
+			#rightbar {
+				position: absolute;
+				right: 0;
+				width: 19%;
+				overflow: scroll;
+				height: 98vh;
+			}
+			#nick {
+				font-size: 150%;
+				width: 65%;
+				text-align: center;
+			}
+			#condition {
+				width: 98%;
+				border: 1px solid black;
+				height: 3%;
+			}
+			#currentCondition {
+				height: 100%;
+				background-color: #359FEA;
+				width: 100%;
+				display: inline-block;
+			}
+			#timer {
+				font-size: 100px;
+			}
+			#hiscores table {
+				width: 100%;
+			}
+			.hiscore_score {
+				font-size: 150%;
+			}
+			.hiscore_date {
+				font-size: 75%;
 			}
 			#car {
 				position: absolute;
 				width: 3%;
 				box-shadow: 0px 0px 3px rgba(0,0,0,0.25);
 				background-color: rgba(0,0,0,0.25);
+				z-index: 10;
 			}
 			.wall {
 				background-color: black;
@@ -64,17 +99,67 @@
 				width: 2%;
 				height: 60%;
 			}
+
+			.checkpoint {
+				position: absolute;
+			}
+			#startline {
+				background-color: white;
+				width: 1%;
+				height: 20%;
+				left: 64%;
+				top: 0;
+			}
+			#checkpoint1 {
+				width: 1%;
+				height: 20%;
+				left: 74%;
+				top: 0;
+			}
+			#checkpoint2 {
+				width: 1%;
+				height: 20%;
+				left: 54%;
+				top: 0;
+			}
 		</style>
 	</head>
 	<body>
 		<div id="game">
 			<img src="car100.png" id="car">
+
 			<div id="wall1" class="collidable wall"></div>
 			<div id="wall2" class="collidable wall"></div>
 			<div id="wall3" class="collidable wall"></div>
 			<div id="wall4" class="collidable wall"></div>
 			<div id="wall5" class="collidable wall"></div>
 			<div id="wall6" class="collidable wall"></div>
+
+			<div id="startline" class="checkpoint collidable"></div>
+			<div id="checkpoint1" class="checkpoint collidable"></div>
+			<div id="checkpoint2" class="checkpoint collidable"></div>
+		</div>
+		<div id="rightbar">
+			Nimimerkki: <input type="text" id="nick">
+			<div id="instructions">
+				<h3>N&auml;pp&auml;imet</h3>
+				<ul>
+					<li>Kaasu: yl&ouml;s-nuolin&auml;pp&auml;in</li>
+					<li>K&auml;&auml;ntyminen: vasen- ja oikea-nuolin&auml;pp&auml;imet</li>
+					<li>Resetointi: R</li>
+				</ul>
+			</div>
+			<h3>Auton kunto</h3>
+			<div id="condition"><span id="currentCondition"></div>
+			<div id="timer"></div>
+
+			<h3>Top ten</h3>
+			<div id="hiscores"></div>
+
+			<h3>Latest laps</h3>
+			<div id="lastlaps">
+				<ol></ol>
+			</div>
 		</div>
 
 		<script>
@@ -99,7 +184,13 @@
 			var user = 1;
 			var interval;
 
+			var timer = 0;
+			var timeron = false;
+			var currentCheckpoint = 0;
+
 			$(document).ready(function(){
+				$("#hiscores").load("save.php");
+				$('#nick').val('pelaaja-'+Math.floor(Math.random()*1000));
 				$('body').bind('keydown',function(e){
 					if (e.which === 37) {
 						keyleftisdown = true;
@@ -136,12 +227,16 @@
 						clearInterval(interval);
 						interval = false;
 					}
-					if (e.which == 82) { // Reset car
+					if (e.which == 82) { // Reset game
 						condition = 1;
 						toppi = 50;
 						left = 50;
 						speed = 0;
 						direction = Math.PI;
+						timer = 0;
+						timeron = false;
+						currentCheckpoint = 0;
+						$("#currentCondition").css("width", condition*100+"%");
 						if (interval == false) interval = setInterval(moveCar, 40);
 					}
 				});
@@ -188,13 +283,19 @@
 						left < collidableright-5 &&
 						left > collidableleft-car.width()+5
 					) { // Collision is taking place
-						collision(x,y);
+						if ($(this).hasClass("checkpoint")) checkpoint($(this).attr("id"));
+						else collision(x,y);
 					}
 				});
 				
 				condition = Math.max(0, condition);
 
 				if (car.attr('src') != 'car'+Math.floor(condition*5)*20+'.png') car.attr('src', 'car'+Math.floor(condition*5)*20+'.png');
+
+				if (timeron) timer = timer + 40;
+				var timerhtml = Math.floor(timer/100)/10 + "";
+				if (timerhtml.length < 3) timerhtml = timerhtml + ".0";
+				$("#timer").html(timerhtml);
 			}
 			
 			function collision(x,y) {
@@ -203,7 +304,22 @@
 				left = left-x*condition;
 				speed = speed/2;
 				if (speed) condition = condition - Math.pow(Math.abs(speed*condition),3)/10000;
-				console.log(Math.floor(condition*100));
+				$("#currentCondition").css("width", condition*100+"%");
+			}
+			function checkpoint(checkpoint) {
+				if (checkpoint == 'startline') {
+					timeron = true;
+					if (currentCheckpoint == 2) { // Full lap has been done
+						$("#lastlaps ol").prepend("<li>"+$("#nick").val()+": "+$("#timer").html()+"</li>");
+						$("#hiscores").load("save.php?nick="+$("#nick").val()+"&time="+timer);
+						timer = 0;
+					}
+					currentCheckpoint = 0;
+				}
+				else {
+					checkpoint = checkpoint.charAt(checkpoint.length-1);
+					if (Math.abs(checkpoint - currentCheckpoint) == 1) currentCheckpoint = checkpoint;
+				}
 			}
 		</script>
 	</body>
