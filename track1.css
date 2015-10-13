@@ -1,0 +1,55 @@
+#wall1 {
+	top: 20%;
+	left: 80%;
+	width: 2%;
+	height: 60%;
+}
+#wall2 {
+	top: 20%;
+	left: 17%;
+	width: 2%;
+	height: 60%;
+}
+#wall3 {
+	top: 20%;
+	left: 17%;
+	width: 65%;
+	height: 2%;
+}
+#wall4 {
+	top: 50%;
+	left: 33%;
+	width: 2%;
+	height: 60%;
+}
+#wall5 {
+	top: 20%;
+	left: 48%;
+	width: 2%;
+	height: 60%;
+}
+#wall6 {
+	top: 50%;
+	left: 63%;
+	width: 2%;
+	height: 60%;
+}
+#startline {
+	background-color: white;
+	width: 1%;
+	height: 20%;
+	left: 64%;
+	top: 0;
+}
+#checkpoint1 {
+	width: 1%;
+	height: 20%;
+	left: 74%;
+	top: 0;
+}
+#checkpoint2 {
+	width: 1%;
+	height: 20%;
+	left: 54%;
+	top: 0;
+}

@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<link href="style.css" rel="stylesheet">
+		<link href="track1.css" rel="stylesheet" id="track">
+	</head>
+	<body>
+		<div id="game">
+			<img src="car100.png" id="car">
+
+			<div id="wall1" class="collidable wall"></div>
+			<div id="wall2" class="collidable wall"></div>
+			<div id="wall3" class="collidable wall"></div>
+			<div id="wall4" class="collidable wall"></div>
+			<div id="wall5" class="collidable wall"></div>
+			<div id="wall6" class="collidable wall"></div>
+
+			<div id="startline" class="checkpoint collidable"></div>
+			<div id="checkpoint1" class="checkpoint collidable"></div>
+			<div id="checkpoint2" class="checkpoint collidable"></div>
+		</div>
+		<div id="rightbar">
+			Nimimerkki: <input type="text" id="nick">
+			<div id="instructions">
+				<h3>N&auml;pp&auml;imet</h3>
+				<ul>
+					<li>Kaasu: yl&ouml;s-nuolin&auml;pp&auml;in</li>
+					<li>K&auml;&auml;ntyminen: vasen- ja oikea-nuolin&auml;pp&auml;imet</li>
+					<li>Resetointi: R</li>
+				</ul>
+			</div>
+			<h3>Auton kunto</h3>
+			<div id="condition"><span id="currentCondition"></div>
+			<div id="timer"></div>
+
+			<h3>Top ten</h3>
+			<div id="hiscores"></div>
+
+			<h3>Latest laps</h3>
+			<div id="lastlaps">
+				<ol></ol>
+			</div>
+		</div>
+		<script src="script.js"></script>
+	</body>
+</html>
