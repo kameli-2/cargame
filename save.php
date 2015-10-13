@@ -3,13 +3,9 @@ date_default_timezone_set("Europe/Helsinki");
 // Add data to hiscore table
 
 if (isset($_GET['nick']) && isset($_GET['time'])) {
-<<<<<<< HEAD
 	$nick = $href = htmlEntities($_GET['nick'], ENT_QUOTES);
 	$time = (int)htmlEntities($_GET['time'], ENT_QUOTES);
-=======
-	$nick = $_GET['nick'];
-	$time = (int)$_GET['time'];
->>>>>>> master
+
 	str_replace(",", ".", $nick);
 	str_replace("\n", " ", $nick);
 
